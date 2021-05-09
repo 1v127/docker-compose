@@ -1,0 +1,50 @@
+version: "3.3"
+networks: 
+    default_stack:
+services:
+                
+  auth:
+        networks: 
+            - default_stack
+        image: sajadkh/doctor_system_authentication
+        deploy:
+            mode: replicated
+            replicas: 2
+        ports:
+            - "8000:8000"
+
+  patient:
+        networks: 
+          - default_stack
+        image: sajadkh/doctor_system_patient_panel
+        deploy:
+            mode: replicated
+            replicas: 1
+
+        ports:
+            - "8002:8002"
+  doctor:
+    networks:
+      - default_stack
+    image: sajadkh/doctor_system_doctor_panel
+    deploy:
+      mode: replicated
+      replicas: 1
+
+    ports:
+      - "8001:8001"
+  visualizer:
+    networks:
+      - default_stack
+    image: dockersamples/visualizer:stable
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
